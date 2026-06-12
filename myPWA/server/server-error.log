@@ -1,0 +1,32 @@
+[2026-06-07T03:28:51.502Z] Error: SQLITE_READONLY: attempt to write a readonly database
+--> in Statement#run([
+  'hello1',
+  '$2b$10$haOe.axBNzV9LQhYxD0hg.6gwLhiTv3QjryoU0AUYuBKzMoMYvbaG'
+], [Function (anonymous)])
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:76:19)
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:20:19)
+    at /workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/server/server.js:62:10
+[2026-06-07T03:30:16.890Z] Error: SQLITE_READONLY: attempt to write a readonly database
+--> in Statement#run([
+  'hello1',
+  '$2b$10$1MtoCst2WBs7p6MiBNnubukdAEgJAGJlU9EvGbRV8chSvHlRUGi2a'
+], [Function (anonymous)])
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:76:19)
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:20:19)
+    at /workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/server/server.js:62:10
+[2026-06-07T03:31:00.719Z] Error: SQLITE_READONLY: attempt to write a readonly database
+--> in Statement#run([
+  'hello1',
+  '$2b$10$MH9CAZVpAoHSRDC7JxWG2Ot2UotLJg7GEUrGsD.iGIxGKAH8uPwNS'
+], [Function (anonymous)])
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:76:19)
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:20:19)
+    at /workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/server/server.js:62:10
+[2026-06-07T03:33:15.994Z] Error: SQLITE_READONLY: attempt to write a readonly database
+--> in Statement#run([
+  'hello1',
+  '$2b$10$h5afE6Xjj3hsKO/n4TNW2eCr4a7afXm5CKOpeQLPcCRPineOKUj5.'
+], [Function (anonymous)])
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:76:19)
+    at Database.<anonymous> (/workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/node_modules/sqlite3/lib/sqlite3.js:20:19)
+    at /workspaces/SCHOOL-MUSICAL-BOOKING-SYSTEM-PWA/myPWA/server/server.js:62:10

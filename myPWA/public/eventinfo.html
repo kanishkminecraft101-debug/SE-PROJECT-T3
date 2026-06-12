@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Event Seating - StagePass</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div>
+        <h1 id="pageTitle">StagePass</h1>
+      </div>
+      <button id="backBtn" class="logout-btn">Back to events</button>
+    </div>
+  </header>
+
+  <main class="event-main">
+    <section class="event-info-panel">
+      <div class="event-summary" id="eventSummary">
+        <h2 id="eventTitleSeating">Event Seating</h2>
+        <p id="eventDate" class="event-detail"></p>
+        <p id="eventLocation" class="event-detail"></p>
+      </div>
+      <div class="seating-layout">
+        <div class="seating-section">
+          <div class="seat-map" id="seatMap">
+            <div class="seat-map-header">
+              <span>Screen</span>
+            </div>
+            <div class="seat-grid" id="seatGrid"></div>
+            <div class="seat-legend">
+              <span class="seat available"></span> Available
+              <span class="seat selected"></span> Selected
+            </div>
+          </div>
+        </div>
+
+        <aside class="booking-panel">
+          <h2>Current Booking</h2>
+          <div class="booking-list">
+            <ul id="selectedSeats">
+              <li class="empty">No seats selected</li>
+            </ul>
+          </div>
+          <div class="booking-summary">
+            <span id="ticketCount">0</span> seats selected
+          </div>
+          <button id="checkoutBtn" class="checkout-btn" disabled>Checkout</button>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>

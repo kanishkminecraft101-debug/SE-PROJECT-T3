@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - StagePass</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="auth-container">
+        <h1>StagePass</h1>
+        <h2>Create Account</h2>
+        <div id="errorMessage" class="message error" style="display:none;"></div>
+        <div id="successMessage" class="message success" style="display:none;"></div>
+
+        <form id="signupForm"> <!-- Form for user signup -->
+            <div class="form-group">
+                <label for="username">Username</label> <!-- Label for username input -->
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label> <!-- Label for password input -->
+                <input type="password" id="password" name="password" required>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label> <!-- Label for confirm password input -->
+                <input type="password" id="confirmPassword" name="confirmPassword" required>
+            </div>
+            <button type="submit">Sign Up</button>
+        </form>
+
+        <div class="auth-links">
+            <p>Already have an account? <a href="login.html">Login here</a></p> <!-- Link to login page -->
+        </div>
+    </div>
+    <script src="js/app.js"></script>
+</body>
+</html>

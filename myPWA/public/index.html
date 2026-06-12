@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>StagePass - Events</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <h1>StagePass</h1>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="events-container" id="eventsContainer">
+      <div class="loading">Loading events...</div>
+    </div>
+  </main>
+
+  <script src="js/app.js" defer></script>
+  <script>
+    if ('serviceWorker' in navigator) { // Register service worker for PWA functionality
+      navigator.serviceWorker.register('serviceWorker.js');
+    }
+    
+    // Check if user is logged in
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('stagepassJwtToken');
+      const userRaw = localStorage.getItem('stagepassUser');
+      const user = userRaw ? JSON.parse(userRaw) : null;
+      if (!token || !user) { // If not logged in, redirect to login page
+        window.location.replace('login.html');
+        return;
+      }
+      if (user.role === 'admin') {
+        window.location.replace('admin.html');
+        return;
+      }
+      
+      // Set up logout button
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('stagepassJwtToken');
+        localStorage.removeItem('stagepassUser');
+        window.location.href = 'login.html';
+      });
+      
+      // Load events
+      loadEvents();
+    });
+  </script>
+</body>
+</html>

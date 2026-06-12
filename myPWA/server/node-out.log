@@ -1,0 +1,6 @@
+nohup: ignoring input
+
+> basic-pwa@1.0.0 start
+> node index.js
+
+Basic PWA server running at http://0.0.0.0:8000

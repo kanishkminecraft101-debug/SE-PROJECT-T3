@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin Panel - StagePass</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>StagePass Admin</h1>
+        <p class="subtitle">Manage events and user access</p>
+      </div>
+      <button id="logoutBtn" class="logout-btn">Logout</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="admin-panel">
+      <div class="admin-card">
+        <h2>Welcome, admin</h2>
+        <p>Use this panel to manage events and users. Only accounts with the <strong>admin</strong> role can access this page.</p>
+      </div>
+      <div class="admin-actions">
+        <button id="viewEventsBtn" class="find-tickets-btn">View Events</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const token = localStorage.getItem('stagepassJwtToken');
+      const userRaw = localStorage.getItem('stagepassUser');
+      const user = userRaw ? JSON.parse(userRaw) : null;
+
+      if (!token || !user || user.role !== 'admin') {
+        window.location.replace('login.html');
+        return;
+      }
+
+      document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('stagepassJwtToken');
+        localStorage.removeItem('stagepassUser');
+        window.location.href = 'login.html';
+      });
+
+      document.getElementById('viewEventsBtn').addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+    });
+  </script>
+</body>
+</html>

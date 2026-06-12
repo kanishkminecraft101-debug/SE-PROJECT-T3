@@ -41,6 +41,51 @@ db.serialize(() => { // Create users table if it doesn't exist
       FOREIGN KEY (created_by) REFERENCES users(id)
     )`
   );
+  // Create seats table if it doesn't exist
+  db.run(
+    `CREATE TABLE IF NOT EXISTS seats (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      event_id INTEGER NOT NULL,
+      label TEXT NOT NULL,
+      row INTEGER,
+      col INTEGER,
+      price REAL DEFAULT 0,
+      status TEXT NOT NULL DEFAULT 'available',
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (event_id) REFERENCES events(id)
+    )`
+  );
+
+  // Create bookings table if it doesn't exist
+  db.run(
+    `CREATE TABLE IF NOT EXISTS bookings (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      event_id INTEGER NOT NULL,
+      seat_id INTEGER NOT NULL,
+      booked_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id),
+      FOREIGN KEY (event_id) REFERENCES events(id),
+      FOREIGN KEY (seat_id) REFERENCES seats(id)
+    )`
+  );
+
+  // Seed events if table is empty
+  db.get('SELECT COUNT(*) as count FROM events', (err, row) => {
+    if (err || !row || row.count > 0) return; // Skip if error or events exist
+    const sampleEvents = [
+      { title: 'Hamilton', location: 'Theater District', date: '2024-06-15', time: '19:00', description: 'An American Musical' },
+      { title: 'Phantom of the Opera', location: 'Broadway', date: '2024-06-20', time: '19:30', description: 'The longest-running show' },
+      { title: 'Les Miserables', location: 'Lincoln Center', date: '2024-06-25', time: '20:00', description: 'Historical epic musical' }
+    ];
+    const stmt = db.prepare('INSERT INTO events (title, location, date, time, description) VALUES (?, ?, ?, ?, ?)');
+    sampleEvents.forEach(evt => {
+      stmt.run(evt.title, evt.location, evt.date, evt.time, evt.description);
+    });
+    stmt.finalize(() => {
+      console.log('Sample events seeded.');
+    });
+  });
 });
 
 function logError(err) {
@@ -192,3 +237,72 @@ router.get('/admin/status', requireAuth, requireRole('admin'), (req, res) => { /
 });
 
 module.exports = router;
+
+// Seats API: list seats for an event
+router.get('/seats', (req, res) => {
+  const eventId = req.query.event_id || null;
+  if (!eventId) return res.status(400).json({ message: 'event_id query parameter is required' });
+
+  db.all(
+    'SELECT id, event_id, label, row, col, price, status FROM seats WHERE event_id = ? ORDER BY row, col', 
+    [eventId],
+    (err, rows) => { 
+      if (err) return sendServerError(res, err);
+      if (rows && rows.length > 0) return res.json({ seats: rows });
+
+      // Auto-seed a basic seating layout if none exist for the event
+      const seatRows = ['A','B','C','D'];
+      const seatsPerRow = 15;
+      const insertStmt = db.prepare('INSERT INTO seats (event_id, label, row, col, price, status) VALUES (?, ?, ?, ?, ?, ?)');
+      for (const r of seatRows) {
+        for (let c = 1; c <= seatsPerRow; c++) {
+          const label = `${r}${c}`;
+          insertStmt.run(eventId, label, r.charCodeAt(0), c, 0.0, 'available');
+        }
+      }
+      insertStmt.finalize((insertErr) => {
+        if (insertErr) return sendServerError(res, insertErr);
+        db.all('SELECT id, event_id, label, row, col, price, status FROM seats WHERE event_id = ? ORDER BY row, col', [eventId], (err2, newRows) => {
+          if (err2) return sendServerError(res, err2);
+          return res.json({ seats: newRows || [] });
+        });
+      });
+    }
+  );
+});
+
+// Book seats atomically: expects { seats: [seatId,...], event_id }
+router.post('/book', requireAuth, (req, res) => {
+  const { seats, event_id } = req.body || {};
+  const userId = req.user?.id || null;
+  if (!Array.isArray(seats) || seats.length === 0 || !event_id) return res.status(400).json({ message: 'event_id and seats array are required' });
+
+  const placeholders = seats.map(() => '?').join(','); // Create placeholders for the number of seats to be booked in the SQL query
+  const sqlUpdate = `UPDATE seats SET status = 'booked' WHERE id IN (${placeholders}) AND event_id = ? AND status = 'available'`;
+  const params = [...seats, event_id];
+
+  db.run('BEGIN TRANSACTION'); // Start a transaction to ensure atomicity of the booking operation
+  db.run(sqlUpdate, params, function (updateErr) {
+    if (updateErr) {
+      db.run('ROLLBACK');
+      return sendServerError(res, updateErr);
+    }
+
+    const changed = this.changes || 0; 
+    if (changed !== seats.length) {
+      db.run('ROLLBACK');
+      return res.status(409).json({ message: 'One or more seats are already booked' }); // If the number of rows updated does not match the number of seats requested, it means some seats were already booked, so we roll back the transaction and return a 409 Conflict response.
+    }
+
+    const insertStmt = db.prepare('INSERT INTO bookings (user_id, event_id, seat_id) VALUES (?, ?, ?)');
+    for (const seatId of seats) insertStmt.run(userId, event_id, seatId);
+    insertStmt.finalize((finalizeErr) => {
+      if (finalizeErr) {
+        db.run('ROLLBACK');
+        return sendServerError(res, finalizeErr);
+      }
+      db.run('COMMIT');
+      return res.json({ message: 'Seats booked successfully', seats });
+    });
+  });
+});

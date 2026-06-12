@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Booking Confirmation - StagePass</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="header-top">
+      <div>
+        <h1 id="pageTitle">StagePass</h1>
+      </div>
+      <button id="backBtn" class="logout-btn">Back to events</button>
+    </div>
+  </header>
+
+  <main class="event-main">
+    <section class="event-info-panel">
+      <div class="event-summary">
+        <h2>Booking Confirmation</h2>
+        <p id="eventInfo" class="event-detail"></p>
+      </div>
+
+      <div class="seating-layout" style="margin-top:16px;">
+        <aside class="booking-panel" style="width:600px; max-width:100%;">
+          <h3>Your Seats</h3>
+          <div class="booking-list">
+            <ul id="bookedSeats"></ul>
+          </div>
+          <div id="messages"></div>
+          <a href="index.html" class="find-tickets-btn" style="display:inline-block; margin-top:12px;">Back to events</a>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/checkout.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const back = document.getElementById('backBtn');
+      if (back) back.addEventListener('click', () => window.location.href='index.html');
+    });
+  </script>
+</body>
+</html>
